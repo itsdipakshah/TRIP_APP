@@ -6,8 +6,8 @@ import { authorization } from '../middlewares/auth.js';
 const router = express.Router();
 
 router.get("/users", getUsers);
-router.get("/profile", authorization,getProfile);
-router.patch("/profile/:id", authorization,updateProfile);
-router.delete("/users/:id", authorization,deleteProfile);
+router.get("/users", authorization,getProfile);
+router.patch("/users", authorization,updateProfile);
+router.delete("/users", authorization,deleteProfile);
 
 export default router;

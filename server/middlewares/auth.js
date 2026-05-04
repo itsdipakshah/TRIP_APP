@@ -1,5 +1,4 @@
-import jwt from 'jsonwebtoken';
-
+import jwt from "jsonwebtoken";
 
 export const authorization = (req, res, next) => {
   const authHeader = req.headers.authorization;
@@ -8,19 +7,18 @@ export const authorization = (req, res, next) => {
 
   if (!token) {
     return res.status(401).json({
-      message: "Access denied. No token provided.",
+      message: "Token not provided.",
     });
   }
-
   try {
-    const decoded = jwt.verify(token, "This-is-my-jwt-secret");
+    const decoded = jwt.verify(token, process.env.JWT_ACCESS_TOKEN);
 
     req.user = decoded;
 
     next();
   } catch (error) {
     return res.status(401).json({
-      message: "Invalid token.",
+      message: "Invalid token or token not provided.",
     });
   }
 };

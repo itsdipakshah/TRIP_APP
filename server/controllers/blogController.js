@@ -10,11 +10,12 @@ import { Blog } from '../models/blogModel.js';
             return res.status(404).json({ message: "No blogs found" });
         }
        res.status(200).json({
-       message:"Non blog Found!",
+       message:"Blogs found successfully",
        success:true,
+       blogs: blogs
          })
        } catch (error) {
-        res.restatus(500).json({ message: "Error fetching blogs", error });
+        res.status(500).json({ message: "Error fetching blogs", error });
     }
  }
 
@@ -30,7 +31,7 @@ export const addBlog = async(req, res)=>{
       .replace(/ /g, "-")
       .replace(/[^\w-]+/g, "");
 
-    if (!title || !content || !excerpt || !bannerUrl || !authorId) {
+    if (!title || !content || !excerpt || !bannerUrl ) {
       return res.status(400).json({
         message: "All fields are required",
       });
@@ -64,7 +65,7 @@ export const updateBlog = async(req, res)=>{
       req.body;
     const { id } = req.params;
 
-    const existingBlog = await Blog.findByIdAndUpdate(id);
+    const existingBlog = await Blog.findById(id);
 
     if (!existingBlog) {
       return res.status(404).json({
@@ -72,7 +73,7 @@ export const updateBlog = async(req, res)=>{
       });
     }
 
-    if (req.user.userId !== existingBlog.authorId) {
+    if (req.user.userId !== existingBlog.authorId.toString()) {
       res.status(403).json({
         message: "You are not authorized to update this blog",
       });
@@ -104,7 +105,7 @@ export const updateBlog = async(req, res)=>{
 
 export  const deleteBlog = async(req , res )=>{
     try {
-        const { id } = req.body;
+        const { id } = req.params;
         const existingBlog = await Blog.findByIdAndDelete(id);
 
         if (!existingBlog) {
@@ -113,8 +114,13 @@ export  const deleteBlog = async(req , res )=>{
             });
         }
 
+        if (req.user.userId !== existingBlog.authorId.toString()) {
+            return res.status(403).json({
+                message: "You are not authorized to delete this blog",
+            });
+        }
 
-        await Blog.findByIdAndDelete(id);
+        
         res.status(200).json({
             message: "Blog deleted successfully",
         });

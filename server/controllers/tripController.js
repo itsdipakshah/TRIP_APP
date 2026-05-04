@@ -14,6 +14,19 @@ export const getTrips = async (req , res)=>{
         res.status(500).json({message:"Error fetching trips"})
     }
 }
+
+export const getTripById = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const trip = await Trip.findById(id);
+        if(!trip){
+            return res.status(404).json({message:"Trip not found"})
+        }
+        res.status(200).json(trip)
+    } catch (error) {
+        res.status(500).json({message:"Error fetching trip"})
+    }
+}
 // create a trip 
 
 export const addTrip = async (req, res) =>{
@@ -34,12 +47,13 @@ export const addTrip = async (req, res) =>{
             endTime,
             location,
             maxParticipants,
-            availableSeats
+            availableSeats,
+            createdBy: req.user.userId,
         });
         await newTrip.save();
         res.status(201).json({message:"Trip created successfully", trip: newTrip});
     } catch (error) {
-        res.status(500).json({message:" Error creating trip"})
+        res.status(500).json({message:error})
     }
 }
 //update a trip 

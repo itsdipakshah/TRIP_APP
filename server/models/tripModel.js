@@ -7,7 +7,7 @@ const tripSchema = new mongoose.Schema({
         required:true
           },
 
-     discription:{
+     description:{
         type:String,
         required:true
      },
@@ -42,7 +42,7 @@ const tripSchema = new mongoose.Schema({
         type:Number,
         required:true
       },
-      availibleSeats:{
+      availableSeats:{
         type:Number,
         required:true
       },
