@@ -1,4 +1,5 @@
 import { Booking } from "../models/bookingModel.js";
+import { Trip } from "../models/tripModel.js";
 
 // Get all bookings
 export const getBookings = async (req, res) => {
@@ -16,22 +17,36 @@ export const getBookings = async (req, res) => {
 
 export const addBooking = async (req, res)=>{
     try {
-        const { userName, email, phone, tripId, numberOfPeople, totalPrice , bookingDate} = req.body;
+        const {  email, phone, tripId, numberOfPeople} = req.body;
 
-        if(!userName || !email || !phone || !tripId || !numberOfPeople || !totalPrice) {
+        if(  !email || !phone || !tripId || !numberOfPeople) {
             return res.status(400).json({ message: "All fields are required" });
         }
 
         const newBooking = new Booking({
-            userName,
+            userName: req.user.name,
             email,
             phone,
             tripId,
             numberOfPeople,
-            totalPrice,
-            bookingDate,
-            status:'pending'
+            totalPrice: numberOfPeople * (await Trip.findById(tripId)).price,
+            tripId: tripId,
+            customerId: req.user.userId,
         });
+
+        await newBooking.save();
+
+        const trip = await Trip.findById(tripId);
+        if (!trip) {
+            return res.status(404).json({ message: "Trip not found" });
+        }
+         
+        if (trip.availableSeats < numberOfPeople) {
+            return res.status(400).json({ message: "Not enough available seats" });
+        }
+
+        trip.availableSeats -= numberOfPeople;
+        await trip.save();
 
         const savedBooking = await newBooking.save();
         res.status(201).json(savedBooking);

@@ -79,6 +79,7 @@ export const userLogin = async (req, res)=>{
     {
         userId: user._id,
         name:user.name,
+        role: user.role,
     },
     process.env.JWT_ACCESS_TOKEN,
     {expiresIn: "1h"},
@@ -88,6 +89,7 @@ export const userLogin = async (req, res)=>{
     {
         userId: user._id,
         name:user.name,
+        role: user.role,
     },
     process.env.JWT_REFRESH_TOKEN,
     {expiresIn: "7d"},
@@ -129,6 +131,7 @@ export const refreshToken =(req,res)=>{
       {
         userId: decoded.userId,
         name: decoded.name,
+        role: decoded.role,
       },
       process.env.JWT_ACCESS_TOKEN,
       { expiresIn: "1h" },
@@ -138,6 +141,7 @@ export const refreshToken =(req,res)=>{
       {
         userId: decoded.userId,
         name: decoded.name,
+        role: decoded.role,
       },
       process.env.JWT_REFRESH_TOKEN,
       { expiresIn: "7d" },
