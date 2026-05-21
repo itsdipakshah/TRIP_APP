@@ -5,14 +5,39 @@ import { Trip } from "../models/tripModel.js";
 export const getBookings = async (req, res) => {
     try {
         const bookings = await Booking.find()
-        if(bookings.length === 0) {
-            return res.status(404).json({ message: "No bookings found" });
-        }
+       
         res.status(200).json(bookings);
     } catch (error) {
         res.status(500).json({ message: "Error fetching bookings", error });
     }
 }
+
+//get booking by id
+export const getBookingById = async(req,res)=>{
+    try {
+        const { id } = req.params;
+
+        const booking = await Booking.findById(id).populate('tripId','title destination date price');
+       
+        res.status(200).json(booking);
+    } catch (error) {
+       res.status(500).json({ message: "Error fetching booking", error }); 
+    }
+}
+
+//get all bookings of a user
+export const getMybookings= async(req,res)=>{
+    try {
+        const bookings = await Booking.find({ customerId: req.user.userId }).populate('tripId','title destination date price');
+       
+        res.status(200).json(bookings);
+    } catch (error) {
+        res.status(500).json({ message: "Error fetching my bookings", error });
+    }
+}
+
+
+
 //add all bookings
 
 export const addBooking = async (req, res)=>{
