@@ -6,9 +6,7 @@ import { Contact } from "../models/contactModel.js";
 export const getContacts = async (req, res) => {
     try {
         const contacts = await Contact.find();
-        if (contacts.length === 0) {
-            return res.status(404).json({ message: "No contacts found" });
-        }
+        
         res.status(200).json(contacts);
     } catch (error) {
         res.status(500).json({ message: "Error fetching contacts", error });
@@ -18,7 +16,7 @@ export const getContacts = async (req, res) => {
 
 // I should be able to add a contact (POST)
 
-export const addContact = async (res,req)=>{
+export const addContact = async (req,res)=>{
     try {
         const {name,email,message} = req.body;
         if(!name || !email || !message){

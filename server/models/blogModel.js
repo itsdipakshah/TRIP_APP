@@ -19,7 +19,7 @@ const blogSchema = new mongoose.Schema({
         required:true,
         unique:true 
     },
-    excert:{
+    excerpt:{
         type:String,
         required:true
     },

@@ -1,29 +1,25 @@
-import { Blog } from '../models/blogModel.js';
+import { Blog } from "../models/blogModel.js";
 
 // Get all blogs
- export  const getBlogs = async (req, res) => {
-    try {
-        const blogs = await Blog.find();
-        
+export const getBlogs = async (req, res) => {
+  try {
+    const blogs = await Blog.find();
 
-        if(blogs.length === 0) {
-            return res.status(404).json({ message: "No blogs found" });
-        }
-       res.status(200).json({
-       message:"Blogs found successfully",
-       success:true,
-       blogs: blogs
-         })
-       } catch (error) {
-        res.status(500).json({ message: "Error fetching blogs", error });
-    }
- }
+    res.status(200).json({
+      message: "Blogs found successfully",
+      success: true,
+      blogs: blogs,
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching blogs", error });
+  }
+};
 
 // Add blog post
 
-export const addBlog = async(req, res)=>{
-    try {
-      const { title, content, excerpt, bannerUrl, isPublished, publishedDate } =
+export const addBlog = async (req, res) => {
+  try {
+    const { title, content, excerpt, bannerUrl, isPublished, publishedDate } =
       req.body;
 
     const slug = title
@@ -31,7 +27,7 @@ export const addBlog = async(req, res)=>{
       .replace(/ /g, "-")
       .replace(/[^\w-]+/g, "");
 
-    if (!title || !content || !excerpt || !bannerUrl ) {
+    if (!title || !content || !excerpt || !bannerUrl) {
       return res.status(400).json({
         message: "All fields are required",
       });
@@ -54,14 +50,14 @@ export const addBlog = async(req, res)=>{
       message: "Blog created successfully",
       blog: newBlog,
     });
-    } catch (error) {
-        res.status(500).json({ message: "Error adding blog", error });
-    }
-}
+  } catch (error) {
+    res.status(500).json({ message: "Error adding blog", error });
+  }
+};
 // update blog post
-export const updateBlog = async(req, res)=>{
-    try {
-         const { title, content, excerpt, bannerUrl, isPublished, publishedDate } =
+export const updateBlog = async (req, res) => {
+  try {
+    const { title, content, excerpt, bannerUrl, isPublished, publishedDate } =
       req.body;
     const { id } = req.params;
 
@@ -95,36 +91,34 @@ export const updateBlog = async(req, res)=>{
       message: "Blog updated successfully",
       blog: existingBlog,
     });
-    } catch (error) {
-        res.status(500).json({ message: "Error updating blog", error });
-    }
-}
-
+  } catch (error) {
+    res.status(500).json({ message: "Error updating blog", error });
+  }
+};
 
 // delete blog post
 
-export  const deleteBlog = async(req , res )=>{
-    try {
-        const { id } = req.params;
-        const existingBlog = await Blog.findByIdAndDelete(id);
+export const deleteBlog = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const existingBlog = await Blog.findByIdAndDelete(id);
 
-        if (!existingBlog) {
-            return res.status(404).json({
-                message: "Blog not found",
-            });
-        }
-
-        if (req.user.userId !== existingBlog.authorId.toString()) {
-            return res.status(403).json({
-                message: "You are not authorized to delete this blog",
-            });
-        }
-
-        
-        res.status(200).json({
-            message: "Blog deleted successfully",
-        });
-    } catch (error) {
-        res.status(500).json({ message: "Error deleting blog", error });
+    if (!existingBlog) {
+      return res.status(404).json({
+        message: "Blog not found",
+      });
     }
-}
+
+    if (req.user.userId !== existingBlog.authorId.toString()) {
+      return res.status(403).json({
+        message: "You are not authorized to delete this blog",
+      });
+    }
+
+    res.status(200).json({
+      message: "Blog deleted successfully",
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Error deleting blog", error });
+  }
+};

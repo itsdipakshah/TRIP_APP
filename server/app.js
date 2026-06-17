@@ -10,10 +10,6 @@ import userRouter from "./routes/userRouter.js"
 import {config} from 'dotenv';
 import cors from "cors";
 
-
-
-
-
 const app = express();
 config({path:"./config.env"})
 
